@@ -19,8 +19,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-  <!-- HOW TO
-       mvn clean compile install -Dgpg.skip-->
   <!-- TODO see if we could make a lite version
        https://github.com/protocolbuffers/protobuf/blob/master/java/lite.md -->
   <modelVersion>4.0.0</modelVersion>
@@ -31,7 +29,7 @@
 
   <name>Turtlequeue Protobuf definition files</name>
   <description>Turtlequeue is a hosted pub-sub messaging platform.</description>
-  <url>https://github.com/turtlequeue/proto</url>
+  <url>https://www.turtlequeue.com</url>
 
   <organization>
     <name>Turtlequeue Limited</name>
@@ -130,7 +128,7 @@
         <artifactId>protobuf-maven-plugin</artifactId>
         <version>0.6.1</version>
         <configuration>
-          <!-- NEEDS to match EXACTLY backend_deps.edn NO EFFECT?? -->
+          <!-- keep in sync with backend_deps.edn -->
           <protocArtifact>com.google.protobuf:protoc:4.0.0-rc-2:exe:${os.detected.classifier}</protocArtifact>
           <pluginId>grpc-java</pluginId>
           <pluginArtifact>io.grpc:protoc-gen-grpc-java:1.35.0:exe:${os.detected.classifier}</pluginArtifact>

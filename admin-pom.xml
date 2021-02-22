@@ -26,7 +26,7 @@
 
   <name>Turtlequeue Admin Protobuf API</name>
   <description>Turtlequeue is a hosted pub-sub messaging platform.</description>
-  <url>https://github.com/turtlequeue/proto</url>
+  <url>https://www.turtlequeue.com</url>
 
   <organization>
     <name>Turtlequeue Limited</name>
@@ -113,6 +113,13 @@
 
   </dependencies>
 
+  <distributionManagement>
+    <snapshotRepository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+  </distributionManagement>
+
   <build>
     <extensions>
       <extension>
@@ -165,6 +172,72 @@
             <id>attach-javadocs</id>
             <goals>
               <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+<!-- All of these are for deploy -->
+      <!-- see https://central.sonatype.org/pages/apache-maven.html -->
+      <plugin>
+        <groupId>org.sonatype.plugins</groupId>
+        <artifactId>nexus-staging-maven-plugin</artifactId>
+        <version>1.6.7</version>
+        <extensions>true</extensions>
+        <configuration>
+          <serverId>ossrh</serverId>
+          <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+          <autoReleaseAfterClose>true</autoReleaseAfterClose>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.2.1</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- javadoc generation and packaging in .jar -->
+      <!-- mvn org.apache.maven.plugins:maven-javadoc-plugin:javadoc -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.2.0</version>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <doctitle>TurtleQueue API Documentation</doctitle>
+          <windowtitle>TurtleQueue API</windowtitle>
+          <bottom>
+            <![CDATA[Copyright &#169; 2019-2021,
+              <a href="https://www.turtlequeue.com">TurtleQueue</a>
+              All Rights Reserved. Use is subject to license terms.]]>
+          </bottom>
+          <doclint>none</doclint>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <version>1.5</version>
+        <executions>
+          <execution>
+            <id>sign-artifacts</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>sign</goal>
             </goals>
           </execution>
         </executions>

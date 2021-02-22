@@ -1,0 +1,97 @@
+//
+// Copyright © 2019 Turtlequeue limited (hello@turtlequeue.com)
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+
+syntax = "proto3";
+
+package tqadmin;
+
+// admin can reuse messages from Tq by importing it.
+// the SDK is always independent of admin to avoid bundling it (ex. in JS)
+//
+
+// [START java_declaration]
+option java_package = "com.turtlequeue.sdk.api.proto";
+// option java_outer_classname = "Tq";
+// [END java_declaration]
+
+ import "tq.proto"; // MessageIdData
+
+// import "google/rpc/error_details.proto";
+
+// import "google/protobuf/empty.proto";
+
+// Exposes
+// http://pulsar.apache.org/api/admin/index.html?org/apache/pulsar/client/admin/Topics.html
+// but grpc instead of HTTP (well it uses http2 anyway)
+// pro:
+// - efficient comms, reusing the SDK link
+// - efficient packing/unpacking
+// - easier to implement the admin sdk methods by using this file for all langages supported
+// cons
+// - harder to implement for non-protobug/grpc languages (main ones are there so OK)
+// - no CURL to admin.. -> but can make a CLI easily so OK
+// - need to figure out how to compile with a mvn/pom again.. no biggie though
+//
+
+
+// https://pulsar.apache.org/api/admin/
+// http://pulsar.apache.org/api/admin/index.html?org/apache/pulsar/client/admin/Topics.html
+
+message ReplyAdminError {
+  tq.ErrorInfo error_info = 1;
+  enum KnownAdminError {
+    GenericException = 0; // to avoid getting a default 0
+    ConflictException = 1;
+    ConnectException = 2;
+    GettingAuthenticationDataException = 3;
+    HttpErrorException = 4;
+    NotAllowedException = 5;
+    NotAuthorizedException = 6;
+    NotFoundException = 7;
+    PreconditionFailedException = 8;
+    ServerSideErrorException = 9;
+  }
+  KnownAdminError known_error = 2; // optional
+}
+
+message TopicDeleteRequest {
+   tq.Topic topic = 1;
+   bool force = 2;
+   bool delete_schema = 3;
+}
+
+message  TopicDeleteResponse {}
+
+message TopicTerminateRequest {
+   tq.Topic topic = 1;
+}
+message TopicTerminateResponse{
+  tq.MessageIdData message_id = 1;
+}
+
+service TurtleQueueAdmin {
+  //
+  // Topic prefix
+  //
+  // http://pulsar.apache.org/api/admin/index.html?org/apache/pulsar/client/admin/Topics.html
+  // CompletableFuture<Void>	deleteAsync(String topic, boolean force)
+  rpc TopicDelete (TopicDeleteRequest) returns (TopicDeleteResponse);
+  rpc TopicTerminate(TopicTerminateRequest) returns (TopicTerminateResponse);
+
+  // Namespace
+  //
+
+}

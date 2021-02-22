@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+     Copyright © 2019 Turtlequeue limited (hello@turtlequeue.com)
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <!-- HOW TO
+       mvn clean compile install -Dgpg.skip-->
+  <!-- TODO see if we could make a lite version
+       https://github.com/protocolbuffers/protobuf/blob/master/java/lite.md -->
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.turtlequeue</groupId>
+  <artifactId>sdk.proto</artifactId>
+  <version>1.0.0</version>
+
+  <name>Turtlequeue Protobuf definition files</name>
+  <description>Turtlequeue is a hosted pub-sub messaging platform.</description>
+  <url>https://github.com/turtlequeue/proto</url>
+
+  <organization>
+    <name>Turtlequeue Limited</name>
+    <url>https://turtlequeue.com</url>
+  </organization>
+  <inceptionYear>2019</inceptionYear>
+
+  <developers>
+    <developer>
+      <name>Nicolas Ha</name>
+      <organization>TurtleQueue Ltd</organization>
+      <organizationUrl>http://www.turtlequeue.com/</organizationUrl>
+    </developer>
+  </developers>
+
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:git@github.com:turtlequeue/proto.git</connection>
+    <developerConnection>scm:git:git@github.com:turtlequeue/proto.git</developerConnection>
+    <url>https://github.com/turtlequeue/proto</url>
+    <tag>HEAD</tag>
+  </scm>
+
+  <properties>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <java.version>1.8</java.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-netty-shaded</artifactId>
+      <version>1.35.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-protobuf</artifactId>
+      <version>1.35.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-stub</artifactId>
+      <version>1.35.0</version>
+    </dependency>
+    <dependency> <!-- necessary for Java 9+ -->
+      <groupId>org.apache.tomcat</groupId>
+      <artifactId>annotations-api</artifactId>
+      <version>6.0.53</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
+      <version>4.0.0-rc-2</version>
+    </dependency>
+
+
+    <!-- https://github.com/googleapis/api-common-protos#packages -->
+    <!-- https://mvnrepository.com/artifact/com.google.api.grpc/proto-google-common-protos -->
+    <dependency>
+      <groupId>com.google.api.grpc</groupId>
+      <artifactId>proto-google-common-protos</artifactId>
+      <version>1.18.0</version>
+    </dependency>
+
+  </dependencies>
+
+  <distributionManagement>
+    <snapshotRepository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+  </distributionManagement>
+
+  <build>
+    <extensions>
+      <extension>
+        <groupId>kr.motd.maven</groupId>
+        <artifactId>os-maven-plugin</artifactId>
+        <version>1.6.2</version>
+      </extension>
+    </extensions>
+    <plugins>
+      <plugin>
+        <groupId>org.xolstice.maven.plugins</groupId>
+        <artifactId>protobuf-maven-plugin</artifactId>
+        <version>0.6.1</version>
+        <configuration>
+          <!-- NEEDS to match EXACTLY backend_deps.edn NO EFFECT?? -->
+          <protocArtifact>com.google.protobuf:protoc:4.0.0-rc-2:exe:${os.detected.classifier}</protocArtifact>
+          <pluginId>grpc-java</pluginId>
+          <pluginArtifact>io.grpc:protoc-gen-grpc-java:1.35.0:exe:${os.detected.classifier}</pluginArtifact>
+
+          <!-- https://www.xolstice.org/protobuf-maven-plugin/compile-mojo.html#protoSourceRoot -->
+          <protoSourceRoot>
+            ${basedir}/src/main/proto/sdk
+          </protoSourceRoot>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>compile</goal>
+              <goal>compile-custom</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- license plugin
+           Usage:
+           mvn com.mycila:license-maven-plugin:4.0.rc2:check
+           mvn com.mycila:license-maven-plugin:4.0.rc2:format
+      -->
+      <plugin>
+        <groupId>com.mycila</groupId>
+        <artifactId>license-maven-plugin</artifactId>
+        <version>4.0.rc2</version>
+        <configuration>
+          <mapping>
+            <proto>DOUBLESLASH_STYLE</proto>
+          </mapping>
+          <aggregate>true</aggregate>
+          <licenseSets>
+            <licenseSet>
+              <header>com/mycila/maven/plugin/license/templates/APACHE-2.txt</header>
+              <includes>
+                <include>**/*.java</include>
+                <include>**/*.xml</include>
+                <include>**/*.proto</include>
+              </includes>
+              <excludes>
+                <exclude>**/README</exclude>
+              </excludes>
+            </licenseSet>
+          </licenseSets>
+          <properties>
+            <owner>Turtlequeue limited</owner>
+            <email>hello@turtlequeue.com</email>
+          </properties>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+
+      <!-- All of these are for deploy -->
+      <!-- see https://central.sonatype.org/pages/apache-maven.html -->
+      <plugin>
+        <groupId>org.sonatype.plugins</groupId>
+        <artifactId>nexus-staging-maven-plugin</artifactId>
+        <version>1.6.7</version>
+        <extensions>true</extensions>
+        <configuration>
+          <serverId>ossrh</serverId>
+          <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+          <autoReleaseAfterClose>true</autoReleaseAfterClose>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.2.1</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- javadoc generation and packaging in .jar -->
+      <!-- mvn org.apache.maven.plugins:maven-javadoc-plugin:javadoc -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.2.0</version>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <doctitle>TurtleQueue API Documentation</doctitle>
+          <windowtitle>TurtleQueue API</windowtitle>
+          <bottom>
+            <![CDATA[Copyright &#169; 2019-2021,
+              <a href="https://www.turtlequeue.com">TurtleQueue</a>
+              All Rights Reserved. Use is subject to license terms.]]>
+          </bottom>
+          <doclint>none</doclint>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <version>1.5</version>
+        <executions>
+          <execution>
+            <id>sign-artifacts</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

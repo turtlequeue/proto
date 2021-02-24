@@ -59,7 +59,7 @@
 
   <groupId>com.turtlequeue</groupId>
   <artifactId>sdk.proto.admin</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1-SNAPSHOT</version>
 
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>

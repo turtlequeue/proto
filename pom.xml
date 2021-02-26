@@ -25,7 +25,7 @@
 
   <groupId>com.turtlequeue</groupId>
   <artifactId>sdk.proto</artifactId>
-  <version>1.0.1-SNAPSHOT</version>
+  <version>1.0.1-SNAPSHOTOKOK</version>
 
   <name>Turtlequeue Protobuf definition files</name>
   <description>Turtlequeue is a hosted pub-sub messaging platform.</description>

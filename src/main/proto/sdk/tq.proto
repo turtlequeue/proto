@@ -254,6 +254,8 @@ message CommandProducerCreate {
   map<string, string> properties = 13;
   string encryption_key = 14;
   HashingScheme hashing_scheme = 15;
+  bool block_if_queue_full = 16;
+
   // uint64 initial_sequence_id = 15; // commented until I am convinced there is a good use case
   // TODO message_router? or in SDK?
 }

@@ -420,6 +420,9 @@ message CommandRedeliverUnacknowledgedMessages {
 
 message CommandCloseConsumer {}
 
+message CommandGetLastMessageId {}
+
+
 message CommandConsumer {
   uint64 consumer_id = 1;
 
@@ -429,6 +432,7 @@ message CommandConsumer {
     CommandFlow command_flow = 4;
     CommandCloseConsumer command_close_consumer = 5;
     CommandSeek command_seek = 7;
+    CommandGetLastMessageId command_get_last_message_id = 8;
   }
 }
 
@@ -478,6 +482,10 @@ message CommandEndOfTopic {
   uint64 consumer_id = 1;
 }
 
+message CommandGetLastMessageIdResponse {
+  MessageIdData last_message_id = 1;
+}
+
 message BrokerToClient {
   uint64 request_id = 1;
 
@@ -491,7 +499,7 @@ message BrokerToClient {
     ReplyError reply_error = 7;
     CommandMessage command_message = 8;
     CommandEndOfTopic command_end_of_topic = 9;
-
+    CommandGetLastMessageIdResponse command_get_last_message_id_response = 10;
   }
 }
 

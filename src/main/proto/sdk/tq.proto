@@ -310,6 +310,13 @@ message CommandMessage {
   Topic topic = 10; // multi-topic
   bool is_replicated = 11;
   string replicated_from = 12;
+  uint32 redelivery_count = 13;
+}
+
+message DeadLetterQueuePolicy {
+  uint32 max_redelivery_count = 1;
+  string dead_letter_topic = 2;
+  string retry_topic = 3;
 }
 
 // newConsumer.subscribe
@@ -338,6 +345,10 @@ message CommandSubscribe {
 
   SubscriptionMode subscription_mode = 12;
   string json_path = 13; // reader
+  bool enable_retry = 14;
+  TimeUnit negative_ack_redelivery_delay_unit = 15;
+  uint64 negative_ack_redelivery_delay_value = 16;
+  DeadLetterQueuePolicy dead_letter_queue_policy = 17;
 }
 
 // success for the above

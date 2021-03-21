@@ -182,22 +182,6 @@ message ReplyError {
 // PUBLISH
 //
 
-// easy FIXME remove
-message CommandPublish {
-  bytes payload = 1;
-  Topic topic = 2;
-  string producer_name = 3;           // optional in pulsar, mandatory in Tq
-  uint64 event_time = 4;              // optional time of the event
-  string key = 5;                     // optional Sets the key of the message for routing policy
-  bool replication_disabled = 6;       // optional, defaults to false
-  map<string, string> properties = 7;
-  TimeUnit delay_time_unit = 8;
-  uint64 delay_time_value = 9;
-
-  // int64 sequence_id = 8;              // optional
-  // uint64 producer_id = 1;        // optional todo
-}
-
 // https://pulsar.apache.org/api/client/org/apache/pulsar/client/api/TypedMessageBuilder.html
 message CommandSend {
   //uint64 producer_id = 1;
@@ -266,30 +250,6 @@ message ResponsePublish {
   MessageIdData message_id = 1;
   //uint64 producer_id = 1; // use the request-id
 }
-
-// message ReplyProducerSuccess {
-//   uint64 request_id = 1;     // for reply
-//   string producer_name = 2;  // can be generated
-//   uint64 producer_id = 3;    // TODO this one and above are in pulsar protocol. Not exposed in http://pulsar.apache.org/api/client/org/apache/pulsar/client/api/Producer.html
-//   // so might have to use the request_id above to link future requests
-// }
-
-// CommandSendReceipt
-// message CommandSend {
-//   uint64 producer_id = 1;
-//   uint64 sequence_id = 2; // for ordering and ack
-//   bytes payload = 3;
-// }
-
-// message AckSend  {
-//   uint64 producer_id = 1;
-//   uint64 sequence_id = 2;
-//   MessageIdData message_id = 3; // generated server TODO see if I have that info
-
-//   bytes payload = 4;
-//   string format = 5; // optional, tells us about the payload. JSON/EDN/TRANSIT etc. defaults to format in connect
-// }
-
 
 //
 // SUBSCRIBE
@@ -465,7 +425,7 @@ message CommandDisconnect {}
 //
 
 message ClientToBroker {
-  // try to have less than 15?
+  // try to have less than 15 here
   uint64 request_id = 1;
 
   oneof ctob_oneof {
@@ -474,18 +434,15 @@ message ClientToBroker {
     ReplyPong reply_pong = 4;
 
 
-    CommandSubscribe command_subscribe = 5; // TODO rename command_consumer_create?
+    CommandSubscribe command_subscribe = 5; // create consumer
     CommandProducerCreate command_producer_create = 6;
 
-    // easy remove TODO use above
-     CommandPublish command_publish = 7;
-
     // consumer methods
-    CommandConsumer command_consumer = 8;
-    CommandProducer command_producer = 9;
+    CommandConsumer command_consumer = 7;
+    CommandProducer command_producer = 8;
 
     // explicit disconnect
-    CommandDisconnect command_disconnect = 10;
+    CommandDisconnect command_disconnect = 9;
   }
 }
 
@@ -498,11 +455,11 @@ message CommandGetLastMessageIdResponse {
 }
 
 message BrokerToClient {
+  // try to have less than 15 here
   uint64 request_id = 1;
 
   oneof btoc_oneof {
-    // generic success, used by consumer creation
-    ReplySuccess reply_success = 2;
+    ReplySuccess reply_success = 2;     // generic success, used by consumer creation
     ReplyConnect reply_connect = 3;
     CommandPing command_ping  = 4;
     ReplyPong reply_pong = 5;
